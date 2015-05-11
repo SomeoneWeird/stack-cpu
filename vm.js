@@ -3,40 +3,36 @@ function CPU(program) {
 
   this.instructions = {
     PSH: {
-      parity: 1,
+      arity: 1,
       fn: function(args) {
         this.pushStack(args[0]);
       }
     },
     ADD: {
       fn: function() {
-        var one = this.popStack();
-        var two = this.popStack();
-        this.pushStack(one + two);
+        var values = this.popStack(2);
+        this.pushStack(values[0] + values[1]);
       }
     },
     SUB: {
       fn: function() {
-        var one = this.popStack();
-        var two = this.popStack();
-        this.pushStack(one - two);
+        var values = this.popStack(2);
+        this.pushStack(values[0] - values[1]);
       }
     },
     MUL: {
       fn: function() {
-        var one = this.popStack();
-        var two = this.popStack();
-        this.pushStack(one * two);
+        var values = this.popStack(2);
+        this.pushStack(values[0] * values[1]);
       }
     },
     DIV: {
       fn: function() {
-        var one = this.popStack();
-        var two = this.popStack();
-        if(one === 0) {
+        var values = this.popStack(2);
+        if(values[0] === 0) {
           throw new Error("Tried to divide by zero.");
         }
-        this.pushStack(two / one);
+        this.pushStack(values[1] / values[0]);
       }
     },
     POP: {
@@ -65,10 +61,16 @@ CPU.prototype.pushStack = function(item) {
   this.SP = this.stack.push(item);
 }
 
-CPU.prototype.popStack = function() {
-  var item = this.stack.pop();
-  this.SP--;
-  return item;
+CPU.prototype.popStack = function(num) {
+  if(!num || num === 1) {
+    return getValue.call(this);
+  }
+  function getValue() {
+    var item = this.stack.pop();
+    this.SP--;
+    return item;
+  }
+  return Array.apply(null, { length: num }).map(getValue.bind(this));
 }
 
 CPU.prototype.step = function(num) {
@@ -78,10 +80,10 @@ CPU.prototype.step = function(num) {
   for(var i = 0; i < num; i++) {
 
     var instruction = this.program[this.IP];
-    var parity      = this.instructions[instruction].parity || 0;
+    var arity       = this.instructions[instruction].arity || 0;
     var args        = [];
 
-    for(var i = 0; i < parity; i++) {
+    for(var i = 0; i < arity; i++) {
       var arg = parseInt(this.program[this.IP + i + 1]);
       if(isNaN(arg)) {
         throw new Error("Argument " + arg + " for " + instruction + " is not a valid number.");
@@ -96,9 +98,9 @@ CPU.prototype.step = function(num) {
       return;
     }
 
-    fn.bind(this)(args);
+    fn.call(this, args);
 
-    this.IP = this.IP + parity + 1;
+    this.IP += arity + 1;
 
   }
 
