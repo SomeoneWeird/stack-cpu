@@ -41,6 +41,38 @@ function CPU(program) {
         this.pushStack(values[1] / values[0]);
       }
     },
+    SET: {
+      arity: 2,
+      nonNum: true,
+      fn: function(args) {
+        this.registers[args[0]] = parseInt(args[1]);
+      }
+    },
+    MOV: {
+      arity: 2,
+      nonNum: true,
+      fn: function(args) {
+        this.registers[args[1]] = this.registers[args[0]];
+        delete this.registers[args[0]];
+      }
+    },
+    LDR: {
+      arity: 1,
+      nonNum: true,
+      fn: function(args) {
+        var value = this.popStack();
+        this.registers[args[0]] = value;
+      }
+    },
+    STR: {
+      arity: 1,
+      nonNum: true,
+      fn: function(args) {
+        var value = this.registers[args[0]];
+        delete this.registers[args[0]];
+        this.pushStack(value);
+      }
+    },
     HLT: {
       fn: function() {
         this.running = false;
@@ -48,9 +80,10 @@ function CPU(program) {
     }
   }
   
-  this.program = program;
-  this.running = false;
-  this.stack   = [];
+  this.program   = program;
+  this.running   = false;
+  this.stack     = [];
+  this.registers = {};
 
   this.IP = 0;
   this.SP = 0;
@@ -84,7 +117,12 @@ CPU.prototype.step = function(num) {
     var args        = [];
 
     for(var i = 0; i < arity; i++) {
-      var arg = parseInt(this.program[this.IP + i + 1]);
+      var arg = this.program[this.IP + i + 1];
+      if(this.instructions[instruction].nonNum) {
+        args.push(arg);
+        continue;
+      }
+      arg = parseInt(arg);
       if(isNaN(arg)) {
         throw new Error("Argument " + arg + " for " + instruction + " is not a valid number.");
       }

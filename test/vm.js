@@ -130,6 +130,94 @@ describe("CPU", function() {
 
     });
 
+    describe("SET", function() {
+
+      it("should set register X to N", function() {
+
+        var cpu = new CPU([
+          "SET", "A", "5",
+          "HLT"
+        ]);
+
+        cpu.run();
+
+        assert.equal(cpu.registers.A, 5);
+
+      });
+
+    });
+
+    describe("MOV", function() {
+
+      it("should move register value X to Y", function() {
+
+        var cpu = new CPU([
+          "SET", "A", "5",
+          "MOV", "A", "B",
+          "HLT"
+        ]);
+
+        cpu.step();
+
+        assert.equal(cpu.registers.A, 5);
+
+        cpu.step();
+
+        assert.equal(cpu.registers.A, undefined);
+        assert.equal(cpu.registers.B, 5);
+
+      });
+
+    });
+
+    describe("LDR", function() {
+
+      it("should load value into register from stack", function() {
+
+        var cpu = new CPU([
+          "PSH", "5",
+          "LDR", "A",
+          "HLT"
+        ]);
+
+        cpu.step();
+
+        assert.equal(cpu.stack[0], 5);
+        assert.equal(cpu.registers.A, undefined);
+
+        cpu.step();
+
+        assert.equal(cpu.stack.length, 0);
+        assert.equal(cpu.registers.A, 5);
+
+      });
+
+    });
+
+    describe("STR", function() {
+
+      it("should push value to stack from register", function() {
+
+        var cpu = new CPU([
+          "SET", "A", "5",
+          "STR", "A",
+          "HLT"
+        ]);
+
+        cpu.step();
+
+        assert.equal(cpu.stack.length, 0);
+        assert.equal(cpu.registers.A, 5);
+
+        cpu.step();
+
+        assert.equal(cpu.stack[0], 5);
+        assert.equal(cpu.registers.A, undefined);
+
+      });
+
+    });
+
   });
 
 });
