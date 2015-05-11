@@ -12,7 +12,7 @@ function CPU(program) {
       fn: function() {
         var one = this.popStack();
         var two = this.popStack();
-        this.pushStack(parseInt(one) + parseInt(two));
+        this.pushStack(one + two);
       }
     },
     POP: {
@@ -58,7 +58,11 @@ CPU.prototype.step = function(num) {
     var args        = [];
 
     for(var i = 0; i < parity; i++) {
-      args.push(this.program[this.IP + i + 1]);
+      var arg = parseInt(this.program[this.IP + i + 1]);
+      if(isNaN(arg)) {
+        throw new Error("Argument " + arg + " for " + instruction + " is not a valid number.");
+      }
+      args.push(arg);
     }
 
     var fn = this.instructions[instruction].fn;
