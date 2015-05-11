@@ -21,6 +21,24 @@ describe("CPU", function() {
 
     });
 
+    describe("POP", function() {
+
+      it("should pop value from stack", function() {
+
+        var cpu = new CPU([
+          "PSH", "5",
+          "POP",
+          "HLT"
+        ]);
+
+        cpu.run();
+
+        assert.equal(cpu.stack.length, 0);
+
+      });
+
+    });
+
     describe("ADD", function() {
 
       it("should add previous 2 values from stack", function() {
@@ -107,24 +125,6 @@ describe("CPU", function() {
         assert.throws(function() {
           cpu.run();
         });
-
-      });
-
-    });
-
-    describe("POP", function() {
-
-      it("should pop value from stack", function() {
-
-        var cpu = new CPU([
-          "PSH", "5",
-          "POP",
-          "HLT"
-        ]);
-
-        cpu.run();
-
-        assert.equal(cpu.stack.length, 0);
 
       });
 

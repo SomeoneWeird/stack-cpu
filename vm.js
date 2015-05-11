@@ -8,6 +8,12 @@ function CPU(program) {
         this.pushStack(args[0]);
       }
     },
+    POP: {
+      fn: function() {
+        var value = this.popStack();
+        console.log("Popped value:", value);
+      }
+    },
     ADD: {
       fn: function() {
         var values = this.popStack(2);
@@ -33,12 +39,6 @@ function CPU(program) {
           throw new Error("Tried to divide by zero.");
         }
         this.pushStack(values[1] / values[0]);
-      }
-    },
-    POP: {
-      fn: function() {
-        var value = this.popStack();
-        console.log("Popped value:", value);
       }
     },
     HLT: {
