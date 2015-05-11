@@ -40,6 +40,78 @@ describe("CPU", function() {
 
     });
 
+    describe("SUB", function() {
+
+      it("should subtract previous 2 values from stack", function() {
+
+        var cpu = new CPU([
+          "PSH", "5",
+          "PSH", "5",
+          "SUB",
+          "HLT"
+        ]);
+
+        cpu.run();
+
+        assert.equal(cpu.stack[0], 0);
+
+      });
+
+    });
+
+    describe("MUL", function() {
+
+      it("should multiply previous 2 values from stack", function() {
+
+        var cpu = new CPU([
+          "PSH", "5",
+          "PSH", "25",
+          "MUL",
+          "HLT"
+        ]);
+
+        cpu.run();
+
+        assert.equal(cpu.stack[0], 125);
+
+      });
+
+    });
+
+    describe("DIV", function() {
+
+      it("should divide previous 2 values from stack", function() {
+
+        var cpu = new CPU([
+          "PSH", "10",
+          "PSH", "5",
+          "DIV",
+          "HLT"
+        ]);
+
+        cpu.run();
+
+        assert.equal(cpu.stack[0], 2);
+
+      });
+
+      it("should throw if divide by zero", function() {
+
+        var cpu = new CPU([
+          "PSH", "10",
+          "PSH", "0",
+          "DIV",
+          "HLT"
+        ]);
+
+        assert.throws(function() {
+          cpu.run();
+        });
+
+      });
+
+    });
+
     describe("POP", function() {
 
       it("should pop value from stack", function() {

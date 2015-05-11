@@ -15,6 +15,30 @@ function CPU(program) {
         this.pushStack(one + two);
       }
     },
+    SUB: {
+      fn: function() {
+        var one = this.popStack();
+        var two = this.popStack();
+        this.pushStack(one - two);
+      }
+    },
+    MUL: {
+      fn: function() {
+        var one = this.popStack();
+        var two = this.popStack();
+        this.pushStack(one * two);
+      }
+    },
+    DIV: {
+      fn: function() {
+        var one = this.popStack();
+        var two = this.popStack();
+        if(one === 0) {
+          throw new Error("Tried to divide by zero.");
+        }
+        this.pushStack(two / one);
+      }
+    },
     POP: {
       fn: function() {
         var value = this.popStack();
