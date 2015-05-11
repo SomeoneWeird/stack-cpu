@@ -2,6 +2,9 @@
 function CPU(program) {
 
   this.instructions = {
+    NOP: {
+      fn: function() {}
+    },
     PSH: {
       arity: 1,
       fn: function(args) {
