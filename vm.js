@@ -47,22 +47,15 @@ CPU.prototype.popStack = function() {
   return item;
 }
 
-CPU.prototype.run = function() {
+CPU.prototype.step = function(num) {
 
-  this.running = true;
+  if(!num) num = 1;
 
-  while(this.running) {
+  for(var i = 0; i < num; i++) {
 
     var instruction = this.program[this.IP];
-
-    if(!instruction) {
-      // end of program.
-      this.running = false;
-      throw new Error("End of Program - HLT was not called.");
-    }
-
-    var parity = this.instructions[instruction].parity || 0;
-    var args = [];
+    var parity      = this.instructions[instruction].parity || 0;
+    var args        = [];
 
     for(var i = 0; i < parity; i++) {
       args.push(this.program[this.IP + i + 1]);
@@ -78,6 +71,28 @@ CPU.prototype.run = function() {
     fn.bind(this)(args);
 
     this.IP = this.IP + parity + 1;
+
+  }
+
+  return this;
+
+}
+
+CPU.prototype.run = function() {
+
+  this.running = true;
+
+  while(this.running) {
+
+    var instruction = this.program[this.IP];
+
+    if(!instruction) {
+      // end of program.
+      this.running = false;
+      throw new Error("End of Program - HLT was not called.");
+    }
+
+    this.step();
 
   }
 
