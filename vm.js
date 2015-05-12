@@ -76,6 +76,30 @@ function CPU(program) {
         this.pushStack(value);
       }
     },
+    IF: {
+      arity: 3,
+      nonNum: true,
+      fn: function(args) {
+        var one = isNaN(parseInt(args[0])) ? this.registers[args[0]] : parseInt(args[0]);
+        var two = isNaN(parseInt(args[1])) ? this.registers[args[1]] : parseInt(args[1]);
+        if(one == two) {
+          this.IP = parseInt(args[2]);
+          return false;
+        }
+      }
+    },
+    IFN: {
+      arity: 3,
+      nonNum: true,
+      fn: function(args) {
+        var one = isNaN(parseInt(args[0])) ? this.registers[args[0]] : parseInt(args[0]);
+        var two = isNaN(parseInt(args[1])) ? this.registers[args[1]] : parseInt(args[1]);
+        if(one != two) {
+          this.IP = parseInt(args[2]);
+          return false;
+        }
+      }
+    },
     HLT: {
       fn: function() {
         this.running = false;
@@ -139,9 +163,14 @@ CPU.prototype.step = function(num) {
       return;
     }
 
-    fn.call(this, args);
+    var result = fn.call(this, args);
 
-    this.IP += arity + 1;
+    // If result is explicitly false, we don't
+    // increment IP, this is so things like
+    // the IF instruction can change program execution.
+    if(result !== false) {
+      this.IP += arity + 1;
+    }
 
   }
 

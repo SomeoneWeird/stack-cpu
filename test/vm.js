@@ -218,6 +218,54 @@ describe("CPU", function() {
 
     });
 
+    describe("IF", function() {
+
+      it("should jump to IP if statement is true", function() {
+
+        var cpu = new CPU([
+          "SET", "A", "5",
+          "IF", "A", "5", "10",
+          "SET", "A", "15",
+          "NOP",
+          "HLT"
+        ]);
+
+        cpu.step();
+
+        assert.equal(cpu.registers.A, 5);
+
+        cpu.run();
+
+        assert.equal(cpu.registers.A, 5);
+
+      });
+
+    });
+
+    describe("IFN", function() {
+
+      it("should jump to IP if statement is not true", function() {
+
+        var cpu = new CPU([
+          "SET", "A", "5",
+          "IFN", "A", "5", "10",
+          "SET", "A", "15",
+          "NOP",
+          "HLT"
+        ]);
+
+        cpu.step();
+
+        assert.equal(cpu.registers.A, 5);
+
+        cpu.run();
+
+        assert.equal(cpu.registers.A, 15);
+
+      });
+
+    });
+
   });
 
 });
