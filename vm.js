@@ -48,7 +48,8 @@ function CPU(program) {
       arity: 2,
       nonNum: true,
       fn: function(args) {
-        this.registers[args[0]] = parseInt(args[1]);
+        var value = isNaN(parseInt(args[1])) ? this.registers[args[1]] : parseInt(args[1]);
+        this.registers[args[0]] = value;
       }
     },
     MOV: {

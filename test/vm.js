@@ -145,6 +145,26 @@ describe("CPU", function() {
 
       });
 
+      it("should set value from another register", function() {
+
+        var cpu = new CPU([
+          "SET", "A", "5",
+          "SET", "B", "A",
+          "HLT"
+        ]);
+
+        cpu.step();
+
+        assert.equal(cpu.registers.A, 5);
+        assert.equal(cpu.registers.B, undefined);
+
+        cpu.step();
+
+        assert.equal(cpu.registers.A, 5);
+        assert.equal(cpu.registers.B, 5);
+
+      });
+
     });
 
     describe("MOV", function() {
