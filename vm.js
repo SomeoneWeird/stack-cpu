@@ -49,32 +49,28 @@ function CPU(program) {
       nonNum: true,
       fn: function(args) {
         var value = isNaN(parseInt(args[1])) ? this.registers[args[1]] : parseInt(args[1]);
-        this.registers[args[0]] = value;
+        this.setRegister(args[0], value);
       }
     },
     MOV: {
       arity: 2,
       nonNum: true,
       fn: function(args) {
-        this.registers[args[1]] = this.registers[args[0]];
-        delete this.registers[args[0]];
+        this.setRegister(args[1], this.pullRegister(args[0]));
       }
     },
     LDR: {
       arity: 1,
       nonNum: true,
       fn: function(args) {
-        var value = this.popStack();
-        this.registers[args[0]] = value;
+        this.setRegister(args[0], this.popStack());
       }
     },
     STR: {
       arity: 1,
       nonNum: true,
       fn: function(args) {
-        var value = this.registers[args[0]];
-        delete this.registers[args[0]];
-        this.pushStack(value);
+        this.pushStack(this.pullRegister(args[0]));
       }
     },
     IF: {
@@ -116,6 +112,24 @@ function CPU(program) {
   this.IP = 0;
   this.SP = 0;
 
+}
+
+CPU.prototype.setRegister = function(reg, val) {
+  this.registers[reg] = val;
+}
+
+CPU.prototype.getRegister = function(reg) {
+  return this.registers[reg];
+}
+
+CPU.prototype.clearRegister = function(reg) {
+  this.setRegister(reg, undefined);
+}
+
+CPU.prototype.pullRegister = function(reg) {
+  var val = this.getRegister(reg);
+  this.clearRegister(reg);
+  return val;
 }
 
 CPU.prototype.pushStack = function(item) {
