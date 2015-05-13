@@ -73,6 +73,13 @@ function CPU(program) {
         this.pushStack(this.pullRegister(args[0]));
       }
     },
+    JMP: {
+      arity: 1,
+      fn: function(args) {
+        this.IP = args[0];
+        return false;
+      }
+    },
     IF: {
       arity: 3,
       nonNum: true,

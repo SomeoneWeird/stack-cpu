@@ -238,6 +238,30 @@ describe("CPU", function() {
 
     });
 
+    describe("JMP", function() {
+
+      it("should jump to another location", function() {
+
+        var cpu = new CPU([
+          "SET", "A", "5",
+          "JMP", "8",
+          "SET", "A", "10",
+          "NOP",
+          "HLT"
+        ]);
+
+        cpu.step();
+
+        assert.equal(cpu.registers.A, 5);
+
+        cpu.step();
+
+        assert.equal(cpu.registers.A, 5);
+
+      });
+
+    });
+
     describe("IF", function() {
 
       it("should jump to IP if statement is true", function() {
